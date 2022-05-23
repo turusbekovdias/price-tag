@@ -1,0 +1,65 @@
+server:
+  port: ${APPLICATION_PORT:8282}
+  host: ${SERVER_HOST:localhost}
+
+spring:
+  application:
+    name: ${APPLICATION_NAME:starter-project}
+
+  profiles:
+    active: dev
+
+  cloud:
+    config:
+      uri: ${CONFIG_SERVER_URL:http://localhost:8888}
+      username: ${CONFIG_SERVER_USERNAME:username}
+      password: ${CONFIG_SERVER_PASSWORD:pa$$w0rd}
+      fail-fast: true
+      retry:
+        initial-interval: 3000
+      enabled: false
+    stream:
+      poller:
+        fixed-delay: 3000
+      kafka:
+        binder:
+          brokers: ${KAFKA_URL:http://localhost:9092}
+          autoCreateTopics: true
+          replication-factor: 1
+          headers: eventType
+      bindings:
+        input:
+          destination: datcom
+          content-type: application/json
+          group: ${APPLICATION_NAME:starter-project}
+        output:
+          destination: datcom
+          content-type: application/json
+
+  data:
+    mongodb:
+      host: ${MONGO_HOST:localhost}
+      port: ${MONGO_PORT:27017}
+      database: database
+      username: username
+      password: password
+      authentication-database: admin
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    enabled-by-default: true
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${DISCOVERY_SERVER_URL:http://localhost:8761}/eureka/
+    healthcheck:
+      enabled: true
+    registerWithEureka: false
+    enabled: false
+
+logging:
+  config: classpath:logback/logback-dev.xml

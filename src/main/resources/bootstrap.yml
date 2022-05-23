@@ -1,0 +1,80 @@
+application:
+  domain: test
+  gateway-host: ${GATEWAY_HOST:localhost}
+  gateway-port-ext: ${GATEWAY_PORT_EXT:8090}
+  gateway-port-int: ${GATEWAY_PORT_INT:8090}
+
+server:
+  port: ${APPLICATION_PORT:8083}
+  host: ${SERVER_HOST:localhost}
+
+spring:
+  application:
+    name: ${APPLICATION_NAME:starter-project}
+
+  profiles:
+    active: '@activatedProperties@'
+
+  cloud:
+    config:
+      uri: ${CONFIG_SERVER_URL:http://localhost:8888}
+      username: ${CONFIG_SERVER_USERNAME:username}
+      password: ${CONFIG_SERVER_PASSWORD:pa$$w0rd}
+      fail-fast: true
+      retry:
+        initial-interval: 3000
+    stream:
+      poller:
+        fixed-delay: 3000
+      kafka:
+        binder:
+          brokers: ${KAFKA_URL:http://localhost:9092}
+          autoCreateTopics: true
+          configuration:
+            security:
+              protocol: SASL_PLAINTEXT
+            sasl:
+              mechanism: PLAIN
+              jaas:
+                config: org.apache.kafka.common.security.plain.PlainLoginModule required username=${KAFKA_USERNAME:'admin'} password=${KAFKA_PASSWORD:'password'};
+#      function:
+#        definition: toUpperCase;generateTestNames
+      bindings:
+        generateTestNames-out-0:
+          destination: datcom
+        toUpperCase-in-0:
+          destination: datcom
+          group: ${APPLICATION_NAME:starter-project}
+        toUpperCase-out-0:
+          destination: test-output-topic
+
+  data:
+    mongodb:
+      host: ${MONGO_HOST:localhost}
+      port: ${MONGO_PORT:27017}
+      database: database
+      username: username
+      password: password
+      authentication-database: admin
+
+  zipkin:
+    base-url: ${ZIPKIN_URL:http://localhost:9411}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    enabled-by-default: true
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${DISCOVERY_SERVER_URL:http://localhost:8761}/eureka/
+    healthcheck:
+      enabled: true
+    registerWithEureka: true
+
+logging:
+  logstash:
+    ignorePatterns: /(actuator|swagger|webjars).*
