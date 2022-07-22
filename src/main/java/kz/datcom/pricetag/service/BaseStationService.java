@@ -5,12 +5,14 @@ import org.bson.types.ObjectId;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 public interface BaseStationService {
 
-    Mono<BaseStationDTO> addBaseStation (BaseStationDTO stationDTO);
-    Mono<BaseStationDTO> getBaseStation (BaseStationDTO stationDTO);
-    Mono<BaseStationDTO> editBaseStation (ObjectId id);
-    Flux<BaseStationDTO> stationList ();
-    Mono<Void> deleteStation (BaseStationDTO stationDTO);
+    BaseStationDTO addBaseStation (BaseStationDTO stationDTO);
+    BaseStationDTO getBaseStation (ObjectId id);
+    BaseStationDTO editBaseStation (BaseStationDTO stationDTO);
+    List<BaseStationDTO> stationList (ObjectId storeId);
+    Void deleteStation (ObjectId id) throws Exception;
 
 }

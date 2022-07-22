@@ -5,12 +5,14 @@ import org.bson.types.ObjectId;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 public interface CompanyService {
 
-    Mono<CompanyDTO> addCompany (CompanyDTO companyDTO);
-    Mono<CompanyDTO> editCompany (CompanyDTO companyDTO);
-    Flux<CompanyDTO> companyList ();
-    Mono<CompanyDTO> getCompany (ObjectId id);
-    Mono<Void> deleteCompany (CompanyDTO companyDTO);
+    CompanyDTO addCompany (CompanyDTO companyDTO);
+    CompanyDTO editCompany (CompanyDTO companyDTO);
+    List<CompanyDTO> companyList ();
+    CompanyDTO getCompany (ObjectId id) throws Exception;
+    Void deleteCompany (ObjectId id);
 
 }

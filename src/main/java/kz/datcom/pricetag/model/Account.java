@@ -6,6 +6,9 @@ import java.util.List;
 
 public class Account {
 
+    private String login;
+    private String password;
+
     private ObjectId id;
     private String fio;
     private String phoneNumber;

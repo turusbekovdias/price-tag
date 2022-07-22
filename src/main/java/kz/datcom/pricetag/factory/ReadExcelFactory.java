@@ -11,7 +11,7 @@ import java.util.Iterator;
 
 public class ReadExcelFactory {
 
-    private void takeDataExcel (File file) throws Exception{
+    public static void takeDataExcel(File file) throws Exception{
         try {
 
             FileInputStream inputStream = new FileInputStream(file);

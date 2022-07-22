@@ -1,12 +1,13 @@
 package kz.datcom.pricetag.controller;
 
 import kz.datcom.pricetag.dto.CompanyDTO;
+import kz.datcom.pricetag.dto.StoreDTO;
 import kz.datcom.pricetag.service.CompanyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -18,23 +19,39 @@ public class CompanyController {
 
     private final CompanyService companyService;
 
-    public Mono<CompanyDTO> addCompany (CompanyDTO companyDTO) {
-        return companyService.addCompany(companyDTO);
+    @PostMapping(value = "/add/company", consumes = "application/json", produces = {"application/json; charset=UTF-8"})
+    public ResponseEntity<Object> addCompany(@RequestBody CompanyDTO companyDTO) {
+        try {
+            return ResponseEntity.ok(companyService.addCompany(companyDTO));
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
     }
 
-    public Mono<CompanyDTO> editCompany (CompanyDTO companyDTO) {
-        return companyService.editCompany(companyDTO);
+    @DeleteMapping(value = "/{companyId}", consumes = "application/json", produces = {"application/json; charset=UTF-8"})
+    public ResponseEntity<Object> deleteCompany(@PathVariable ObjectId companyId) {
+        try {
+            return ResponseEntity.ok(companyService.deleteCompany(companyId));
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
     }
 
-    public Mono<CompanyDTO> getCompany (ObjectId id) {
-        return companyService.getCompany(id);
+    @GetMapping(value = "/company/list", consumes = "application/json", produces = {"application/json; charset=UTF-8"})
+    public ResponseEntity<Object> getCompanyList() {
+        try {
+            return ResponseEntity.ok(companyService.companyList());
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
     }
 
-    public Flux<CompanyDTO> companyList() {
-        return companyService.companyList();
-    }
-
-    public Mono<Void> deleteCompany (CompanyDTO companyDTO) {
-        return companyService.deleteCompany(companyDTO);
+    @GetMapping(value = "/{id}", consumes = "application/json", produces = {"application/json; charset=UTF-8"})
+    public ResponseEntity<Object> getById(@PathVariable ObjectId companyId) {
+        try {
+            return ResponseEntity.ok(companyService.getCompany(companyId));
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
     }
 }

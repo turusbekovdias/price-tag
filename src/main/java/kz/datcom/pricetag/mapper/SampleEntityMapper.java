@@ -1,6 +1,8 @@
 package kz.datcom.pricetag.mapper;
 
+import kz.datcom.pricetag.dto.BaseStationDTO;
 import kz.datcom.pricetag.dto.SampleDTO;
+import kz.datcom.pricetag.model.BaseStation;
 import kz.datcom.pricetag.model.SampleEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -18,4 +20,6 @@ public interface SampleEntityMapper extends BaseEntityMapper<SampleDTO, SampleEn
   })
   @Override
   SampleDTO toDTO(final SampleEntity entity);
+
+    BaseStation toEntity(BaseStationDTO baseStationDTO);
 }

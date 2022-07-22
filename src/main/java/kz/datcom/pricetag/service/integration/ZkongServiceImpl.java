@@ -1,37 +1,61 @@
 package kz.datcom.pricetag.service.integration;
 
-import kz.datcom.pricetag.dto.AuthDTO;
-import kz.datcom.pricetag.dto.ImportItemDTO;
-import kz.datcom.pricetag.dto.ZkongResponceDTO;
-import kz.datcom.pricetag.model.TagItemBind;
-import reactor.core.publisher.Mono;
-
-import java.util.List;
+import kz.datcom.pricetag.dto.*;
 
 public class ZkongServiceImpl implements ZkongService{
 
     @Override
-    public Mono<ZkongResponceDTO> getPublicKey() {
+    public ZkongResponceDTO getPublicKey() {
+        try {
+            ZkongResponceDTO responceDTO = ZkongAPI.getPublicKey();
+            return responceDTO;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         return null;
     }
 
     @Override
-    public Mono<ZkongResponceDTO> signIn(AuthDTO authDTO) {
+    public ZkongResponceDTO signIn(AuthDTO authDTO) {
+        try {
+            ZkongResponceDTO responceDTO = ZkongAPI.logIn(authDTO);
+            return responceDTO;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         return null;
     }
 
     @Override
-    public Mono<ZkongResponceDTO> importItem(ImportItemDTO importItemDTO) {
+    public ZkongResponceDTO importItem(ImportItemDTO importItemDTO) {
+        try {
+            ZkongResponceDTO responceDTO = ZkongAPI.importItem(importItemDTO);
+            return responceDTO;
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
         return null;
     }
 
     @Override
-    public Mono<ZkongResponceDTO> deleteItem(String storeId, List<String> items) {
+    public ZkongResponceDTO deleteItem(DeleteItemDTO deleteItemDTO) {
+        try {
+            ZkongResponceDTO responceDTO = ZkongAPI.deleteItem(deleteItemDTO);
+            return responceDTO;
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
         return null;
     }
 
     @Override
-    public Mono<ZkongResponceDTO> tagItemBinds(List<TagItemBind> tagItemBindList) {
+    public ZkongResponceDTO tagItemBinds(TagsItemsBindDTO tagsItemsBindDTO) {
+        try {
+            ZkongResponceDTO responceDTO = ZkongAPI.bindItemWithTag(tagsItemsBindDTO);
+            return responceDTO;
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
         return null;
     }
 }

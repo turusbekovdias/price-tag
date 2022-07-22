@@ -1,43 +1,58 @@
 package kz.datcom.pricetag.controller;
 
+import kz.datcom.pricetag.dto.BaseStationDTO;
 import kz.datcom.pricetag.dto.StoreDTO;
+import kz.datcom.pricetag.service.BaseStationService;
 import kz.datcom.pricetag.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/v1/branch")
+@RequestMapping(value = "/api/v1/store")
 public class BranchController {
 
-    private final StoreService branchService;
+    private final StoreService storeService;
 
-    public Mono<StoreDTO> addBranch(@RequestBody StoreDTO branchDTO) {
-        return branchService.addBranch(branchDTO);
+    @PostMapping(value = "/add/store", consumes = "application/json", produces = {"application/json; charset=UTF-8"})
+    public ResponseEntity<Object> addStore(@RequestBody StoreDTO storeDTO) {
+        try {
+            return ResponseEntity.ok(storeService.addStore(storeDTO));
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
     }
 
-    public Mono<StoreDTO> editBranch(@RequestBody StoreDTO branchDTO) {
-        return branchService.editBranch(branchDTO);
+    @DeleteMapping(value = "/{storeId}", consumes = "application/json", produces = {"application/json; charset=UTF-8"})
+    public ResponseEntity<Object> deleteStore(@PathVariable ObjectId storeId) {
+        try {
+            return ResponseEntity.ok(storeService.deleteStore(storeId));
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
     }
 
-    public Flux<StoreDTO> branchList(@RequestParam("id") ObjectId id) {
-        return branchService.branchList(id);
+    @GetMapping(value = "/store/list", consumes = "application/json", produces = {"application/json; charset=UTF-8"})
+    public ResponseEntity<Object> getStoreList(@RequestParam("companyId") ObjectId companyId) {
+        try {
+            return ResponseEntity.ok(storeService.storeList(companyId));
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
     }
 
-    public Mono<StoreDTO> getBranch(@RequestParam("id") ObjectId id) {
-        return branchService.getBranch(id);
+    @GetMapping(value = "/{id}", consumes = "application/json", produces = {"application/json; charset=UTF-8"})
+    public ResponseEntity<Object> getById(@PathVariable ObjectId storeId) {
+        try {
+            return ResponseEntity.ok(storeService.getStore(storeId));
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
     }
-
-    public Mono<Void> deleteBranch(@RequestBody StoreDTO branchDTO) {
-        return branchService.deleteBranch(branchDTO);
-    }
-
 }

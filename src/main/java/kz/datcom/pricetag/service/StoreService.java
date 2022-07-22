@@ -5,12 +5,14 @@ import org.bson.types.ObjectId;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 public interface StoreService {
 
-    Mono<StoreDTO> addBranch (StoreDTO branchDTO);
-    Mono<StoreDTO> editBranch (StoreDTO branchDTO);
-    Flux<StoreDTO> branchList (ObjectId id);
-    Mono<StoreDTO> getBranch (ObjectId id);
-    Mono<Void> deleteBranch (StoreDTO branchDTO);
+    StoreDTO addStore (StoreDTO storeDTO);
+    StoreDTO editStore (StoreDTO storeDTO);
+    List<StoreDTO> storeList (ObjectId companyId);
+    StoreDTO getStore (ObjectId id);
+    Void deleteStore (ObjectId id) throws Exception;
 
 }
