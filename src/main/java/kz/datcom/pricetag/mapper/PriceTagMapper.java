@@ -1,22 +1,60 @@
 package kz.datcom.pricetag.mapper;
 
 import kz.datcom.pricetag.dto.PriceTagDTO;
-import kz.datcom.pricetag.dto.StoreDTO;
 import kz.datcom.pricetag.model.PriceTag;
-import kz.datcom.pricetag.model.Store;
 import org.mapstruct.Mapper;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring")
-public interface PriceTagMapper {
+public class PriceTagMapper {
 
-    PriceTagDTO toDTO(PriceTag priceTag);
+    public PriceTagDTO toDTO(PriceTag priceTag) {
+        PriceTagDTO tagDTO = new PriceTagDTO();
+        tagDTO.setId(priceTag.getId());
+        tagDTO.setTagCode(priceTag.getTagCode());
+        tagDTO.setBaseStation(priceTag.getBaseStation());
+        tagDTO.setStatus(priceTag.getStatus());
+        tagDTO.setRegistrationDate(priceTag.getRegistrationDate());
+        return tagDTO;
+    }
 
-    PriceTag toEntity (PriceTagDTO priceTagDTO);
+    public PriceTag toEntity (PriceTagDTO priceTagDTO) {
+        PriceTag tagEnt = new PriceTag();
+        tagEnt.setId(priceTagDTO.getId());
+        tagEnt.setTagCode(priceTagDTO.getTagCode());
+        tagEnt.setBaseStation(priceTagDTO.getBaseStation());
+        tagEnt.setStatus(priceTagDTO.getStatus());
+        tagEnt.setRegistrationDate(priceTagDTO.getRegistrationDate());
+        return tagEnt;
+    }
 
-    List<PriceTag> toEntity(List<PriceTagDTO> dtoList);
+    public List<PriceTag> toEntity(List<PriceTagDTO> dtoList) {
+        return dtoList.stream()
+                .map(env -> {
+                    PriceTag tagEnt = new PriceTag();
+                    tagEnt.setId(env.getId());
+                    tagEnt.setTagCode(env.getTagCode());
+                    tagEnt.setBaseStation(env.getBaseStation());
+                    tagEnt.setStatus(env.getStatus());
+                    tagEnt.setRegistrationDate(env.getRegistrationDate());
+                    return tagEnt;
+                })
+                .collect(Collectors.toList());
+    }
 
-    List <PriceTagDTO> toDTO(List<PriceTag> entityList);
+    public List <PriceTagDTO> toDTO(List<PriceTag> entityList) {
+        return entityList.stream()
+                .map(env -> {
+                    PriceTagDTO tagDTO = new PriceTagDTO();
+                    tagDTO.setId(env.getId());
+                    tagDTO.setTagCode(env.getTagCode());
+                    tagDTO.setBaseStation(env.getBaseStation());
+                    tagDTO.setStatus(env.getStatus());
+                    tagDTO.setRegistrationDate(env.getRegistrationDate());
+                    return tagDTO;
+                })
+                .collect(Collectors.toList());
+    }
 
 }

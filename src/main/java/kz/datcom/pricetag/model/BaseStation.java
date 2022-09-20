@@ -1,59 +1,40 @@
 package kz.datcom.pricetag.model;
 
-import org.bson.types.ObjectId;
+
+
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Table(name = "base_station")
-public class BaseStation {
+@Getter
+@Setter
+public class BaseStation implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private ObjectId id;
+    private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "store_id")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "store")
     private Store store;
 
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    private Company company;
+    @Column(name = "ip_address")
+    private String ipAddress;
+
+    @Column(name = "status")
+    private String status;
+
+    @Column(name = "registrationDate")
+    private LocalDateTime registrationDate;
 
     @OneToMany
     private List<PriceTag> priceTags;
 
-    public ObjectId getId() {
-        return id;
-    }
-
-    public void setId(ObjectId id) {
-        this.id = id;
-    }
-
-    public Store getStore() {
-        return store;
-    }
-
-    public void setStore(Store store) {
-        this.store = store;
-    }
-
-    public Company getCompany() {
-        return company;
-    }
-
-    public void setCompany(Company company) {
-        this.company = company;
-    }
-
-    public List<PriceTag> getPriceTags() {
-        return priceTags;
-    }
-
-    public void setPriceTags(List<PriceTag> priceTags) {
-        this.priceTags = priceTags;
-    }
 }

@@ -1,21 +1,39 @@
 package kz.datcom.pricetag.model;
 
-import org.bson.types.ObjectId;
+
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Entity
 @Table(name = "company")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Company {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private ObjectId id;
+    private Long id;
 
     @Column(name = "company_name")
     private String companyName;
+
+    @Column(name = "country")
+    private String country;
+
+    @Column(name = "registration_date")
+    private LocalDateTime registrationDate;
+
+    @Column(name = "status")
+    private String status;
 
     @OneToMany
     private List<Store> stores;
@@ -23,11 +41,11 @@ public class Company {
     @OneToMany
     private List<BaseStation> baseStations;
 
-    public ObjectId getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(ObjectId id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

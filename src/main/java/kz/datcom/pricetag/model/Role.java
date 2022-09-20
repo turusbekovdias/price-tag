@@ -1,8 +1,18 @@
 package kz.datcom.pricetag.model;
 
-import org.bson.types.ObjectId;
 
+
+import javax.persistence.*;
+
+@Entity
+@Table(name = "role")
 public class Role {
-    private ObjectId id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+
+    @Column(name = "name")
     private String name;
 }

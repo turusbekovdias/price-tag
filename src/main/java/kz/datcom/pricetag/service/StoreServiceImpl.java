@@ -6,13 +6,14 @@ import kz.datcom.pricetag.model.Store;
 import kz.datcom.pricetag.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.types.ObjectId;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -22,11 +23,12 @@ public class StoreServiceImpl implements StoreService {
     @Autowired
     StoreRepository storeRepository;
 
-    private final StoreMappper storeMapper;
+     private StoreMappper storeMapper = new StoreMappper();
 
     @Override
     public StoreDTO addStore(StoreDTO storeDTO) {
-        Store store = storeRepository.save(storeMapper.toEntity(storeDTO));
+        Store store = storeMapper.toEntity(storeDTO);
+        storeRepository.save(store);
         return storeMapper.toDTO(store);
     }
 
@@ -36,19 +38,26 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public List<StoreDTO> storeList(ObjectId companyId) {
+    public List<StoreDTO> storesByCompany(Long companyId) {
         List<Store> stores = storeRepository.findByCompany(companyId);
         return storeMapper.toDTO(stores);
     }
 
     @Override
-    public StoreDTO getStore(ObjectId id) {
+    public List<StoreDTO> storeList() {
+        List<Store> stores = storeRepository.findAll();
+        return storeMapper.toDTO(stores);
+    }
+
+
+    @Override
+    public StoreDTO getStore(Long id) {
         Store store = storeRepository.getOne(id);
         return storeMapper.toDTO(store);
     }
 
     @Override
-    public Void deleteStore(ObjectId id) throws Exception{
+    public Void deleteStore(Long id) throws Exception{
         try {
             storeRepository.deleteById(id);
             return null;

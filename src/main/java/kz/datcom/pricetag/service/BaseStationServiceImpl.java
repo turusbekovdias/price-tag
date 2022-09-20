@@ -6,11 +6,9 @@ import kz.datcom.pricetag.model.BaseStation;
 import kz.datcom.pricetag.repository.BaseStationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.types.ObjectId;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -20,9 +18,9 @@ import java.util.List;
 public class BaseStationServiceImpl implements BaseStationService {
 
     @Autowired
-    public BaseStationRepository baseStationRepository;
+    BaseStationRepository baseStationRepository;
 
-    private final BaseStationMapper baseStationMapper;
+    private BaseStationMapper baseStationMapper = new BaseStationMapper();
 
     @Override
     public BaseStationDTO addBaseStation(BaseStationDTO stationDTO) {
@@ -31,7 +29,7 @@ public class BaseStationServiceImpl implements BaseStationService {
     }
 
     @Override
-    public BaseStationDTO getBaseStation(ObjectId id) {
+    public BaseStationDTO getBaseStation(Long id) {
         BaseStation baseStation = baseStationRepository.getOne(id);
         return baseStationMapper.toDTO(baseStation);
     }
@@ -41,13 +39,19 @@ public class BaseStationServiceImpl implements BaseStationService {
     }
 
     @Override
-    public List<BaseStationDTO> stationList(ObjectId id) {
+    public List<BaseStationDTO> stationByStore(Long id) {
         List<BaseStation> baseStations = baseStationRepository.findByStoreId(id);
         return baseStationMapper.toDTO(baseStations);
     }
 
     @Override
-    public Void deleteStation(ObjectId id) throws Exception {
+    public List<BaseStationDTO> stationList() {
+        List<BaseStation> baseStations = baseStationRepository.findAll();
+        return baseStationMapper.toDTO(baseStations);
+    }
+
+    @Override
+    public Void deleteStation(Long id) throws Exception {
         try {
             baseStationRepository.deleteById(id);
             return null;

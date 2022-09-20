@@ -6,7 +6,7 @@ import kz.datcom.pricetag.service.BaseStationService;
 import kz.datcom.pricetag.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.types.ObjectId;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/v1/store")
+@RequestMapping(value = "/api/v1/stores")
 public class BranchController {
 
     private final StoreService storeService;
@@ -30,7 +30,7 @@ public class BranchController {
     }
 
     @DeleteMapping(value = "/{storeId}", consumes = "application/json", produces = {"application/json; charset=UTF-8"})
-    public ResponseEntity<Object> deleteStore(@PathVariable ObjectId storeId) {
+    public ResponseEntity<Object> deleteStore(@PathVariable Long storeId) {
         try {
             return ResponseEntity.ok(storeService.deleteStore(storeId));
         } catch (Exception ex) {
@@ -38,17 +38,26 @@ public class BranchController {
         }
     }
 
-    @GetMapping(value = "/store/list", consumes = "application/json", produces = {"application/json; charset=UTF-8"})
-    public ResponseEntity<Object> getStoreList(@RequestParam("companyId") ObjectId companyId) {
+    @GetMapping(value = "/company/list")
+    public ResponseEntity<Object> getStoresByCompanyId(@RequestParam("companyId") Long companyId) {
         try {
-            return ResponseEntity.ok(storeService.storeList(companyId));
+            return ResponseEntity.ok(storeService.storesByCompany(companyId));
         } catch (Exception ex) {
             return ResponseEntity.badRequest().body(ex.getMessage());
         }
     }
 
+
+    @GetMapping(value = "/store/list")
+    public ResponseEntity<Object> getStoreList() {
+        try {
+            return ResponseEntity.ok(storeService.storeList());
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
+    }
     @GetMapping(value = "/{id}", consumes = "application/json", produces = {"application/json; charset=UTF-8"})
-    public ResponseEntity<Object> getById(@PathVariable ObjectId storeId) {
+    public ResponseEntity<Object> getById(@PathVariable Long storeId) {
         try {
             return ResponseEntity.ok(storeService.getStore(storeId));
         } catch (Exception ex) {

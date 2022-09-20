@@ -4,7 +4,7 @@ import kz.datcom.pricetag.dto.PriceTagDTO;
 import kz.datcom.pricetag.service.PriceTagService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.types.ObjectId;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +13,7 @@ import javax.validation.Valid;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/v1/price-tags")
+@RequestMapping(value = "/api/v1/tags")
 public class PriceTagController {
 
     private final PriceTagService priceTagService;
@@ -28,7 +28,7 @@ public class PriceTagController {
     }
 
     @DeleteMapping(value = "/{tagId}", consumes = "application/json", produces = {"application/json; charset=UTF-8"})
-    public ResponseEntity<Object> deletePriceTag(@PathVariable ObjectId tagId) {
+    public ResponseEntity<Object> deletePriceTag(@PathVariable Long tagId) {
         try {
             return ResponseEntity.ok(priceTagService.deleteTag(tagId));
         } catch (Exception ex) {
@@ -37,16 +37,25 @@ public class PriceTagController {
     }
 
     @GetMapping(value = "/tag/list", consumes = "application/json", produces = {"application/json; charset=UTF-8"})
-    public ResponseEntity<Object> getTagList(@RequestParam("storeId") ObjectId storeId) {
+    public ResponseEntity<Object> getTagList() {
         try {
-            return ResponseEntity.ok(priceTagService.tagList(storeId));
+            return ResponseEntity.ok(priceTagService.tagList());
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
+    }
+
+    @GetMapping(value = "/station/list", consumes = "application/json", produces = {"application/json; charset=UTF-8"})
+    public ResponseEntity<Object> getTagByBaseStation(@RequestParam("stationId") Long stationId) {
+        try {
+            return ResponseEntity.ok(priceTagService.tagByBaseStation(stationId));
         } catch (Exception ex) {
             return ResponseEntity.badRequest().body(ex.getMessage());
         }
     }
 
     @GetMapping(value = "/{id}", consumes = "application/json", produces = {"application/json; charset=UTF-8"})
-    public ResponseEntity<Object> getById(@PathVariable ObjectId tagId) {
+    public ResponseEntity<Object> getById(@PathVariable Long tagId) {
         try {
             return ResponseEntity.ok(priceTagService.getPriceTag(tagId));
         } catch (Exception ex) {
