@@ -32,6 +32,7 @@ public class PriceTagServiceImpl implements PriceTagService {
 
     @Override
     public PriceTagDTO addPriceTag(PriceTagDTO tagDTO) {
+        tagDTO.setStatus("NOT BIND");
         PriceTag priceTag = priceTagRepository.save(priceTagMapper.toEntity(tagDTO));
         return priceTagMapper.toDTO(priceTag);
     }
@@ -50,7 +51,7 @@ public class PriceTagServiceImpl implements PriceTagService {
     @Override
     public List<PriceTagDTO> tagByBaseStation(Long stationId) {
         BaseStation station = stationRepository.getOne(stationId);
-        List<PriceTag> priceTags = priceTagRepository.findByBaseStation(station);
+        List<PriceTag> priceTags = priceTagRepository.findAllByBaseStation(station);
         return priceTagMapper.toDTO(priceTags);
     }
 

@@ -1,6 +1,7 @@
 package kz.datcom.pricetag.dto;
 
 import kz.datcom.pricetag.model.BaseStation;
+import kz.datcom.pricetag.model.Item;
 import kz.datcom.pricetag.model.Store;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,4 +17,5 @@ public class PriceTagDTO {
     private BaseStation baseStation;
     private LocalDateTime registrationDate;
     private String status;
+    private Item productItem;
 }

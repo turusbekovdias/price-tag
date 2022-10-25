@@ -1,16 +1,15 @@
 package kz.datcom.pricetag.service.integration;
 
 import kz.datcom.pricetag.dto.*;
-import kz.datcom.pricetag.model.TagItemBind;
-import reactor.core.publisher.Mono;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public interface ZkongService {
 
-    ZkongResponceDTO getPublicKey();
-    ZkongResponceDTO signIn (AuthDTO authDTO);
-    ZkongResponceDTO importItem (ImportItemDTO importItemDTO);
-    ZkongResponceDTO deleteItem(DeleteItemDTO deleteItemDTO);
-    ZkongResponceDTO tagItemBinds(TagsItemsBindDTO tagsItemsBindDTO);
+    ZkongResponseDTO signIn (AuthDTO authDTO) throws Exception;
+    ZkongResponseDTO importItem () throws Exception;
+    ZkongResponseDTO deleteItem(List<String> list) throws Exception;
+    ZkongResponseDTO tagItemBinds() throws Exception;
 }

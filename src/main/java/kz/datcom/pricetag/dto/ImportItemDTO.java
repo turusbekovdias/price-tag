@@ -1,13 +1,15 @@
 package kz.datcom.pricetag.dto;
 
 import kz.datcom.pricetag.model.Item;
+import lombok.Data;
 
 import java.util.List;
 
+@Data
 public class ImportItemDTO {
-    private Integer storeId;
-    private Integer merchantId;
-    private Integer agencyId;
+    private Long storeId;
+    private Long merchantId;
+    private Long agencyId;
     private Integer unitName;
-    private List<Item> itemList;
+    private List<ItemForImportDTO> itemList;
 }

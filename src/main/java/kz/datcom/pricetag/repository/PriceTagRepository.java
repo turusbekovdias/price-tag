@@ -10,5 +10,6 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import java.util.List;
 
 public interface PriceTagRepository extends JpaRepository<PriceTag, Long> {
-    List<PriceTag> findByBaseStation(BaseStation station);
+    List<PriceTag> findAllByBaseStation(BaseStation station);
+    List<PriceTag> findAllByStatus(String status);
 }

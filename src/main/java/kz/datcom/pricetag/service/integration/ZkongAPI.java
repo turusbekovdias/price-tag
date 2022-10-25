@@ -1,153 +1,169 @@
 package kz.datcom.pricetag.service.integration;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import kz.datcom.pricetag.dto.*;
+import kz.datcom.pricetag.factory.EncryptionPassword;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class ZkongAPI {
 
     private static String address = "http://esl.zkong.com:9999";
-    private static HttpURLConnection connection = null;
-    private static String urlParameters;
+    private static HttpRequest httpRequest;
+    private static HttpClient httpClient;
 
-    public static ZkongResponceDTO getPublicKey() throws Exception {
+
+    public static String getPublicKey() throws Exception {
         //Create connection
         try {
-            URL url = new URL(address);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-Type",
-                    "application/x-www-form-urlencoded");
+            httpClient = HttpClient.newHttpClient();
+            httpRequest = HttpRequest.newBuilder()
+                    .uri(URI.create(address + "/user/getErpPublicKey"))
+                    .build();
 
-            connection.setRequestProperty("Content-Length",
-                    Integer.toString(urlParameters.getBytes().length));
-            connection.setRequestProperty("Content-Language", "en-US");
+            HttpResponse response = httpClient.send(httpRequest,
+                    HttpResponse.BodyHandlers.ofString());
 
-            connection.setUseCaches(false);
-            connection.setDoOutput(true);
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
-        return new ZkongResponceDTO();
-    }
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String,Object> map = mapper.readValue((String) response.body(), Map.class);
 
-    public static ZkongResponceDTO logIn(AuthDTO authDTO) throws Exception {
-        //Create connection
-        try {
-            URL url = new URL(address);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-Type",
-                    "application/x-www-form-urlencoded");
-
-            connection.setRequestProperty("Content-Length",
-                    Integer.toString(urlParameters.getBytes().length));
-            connection.setRequestProperty("Content-Language", "en-US");
-
-            connection.setUseCaches(false);
-            connection.setDoOutput(true);
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
-        return new ZkongResponceDTO();
-    }
-
-    public static ZkongResponceDTO importItem (ImportItemDTO importItemDTO) throws Exception {
-        //Create connection
-        try {
-            URL url = new URL(address);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-Type",
-                    "application/x-www-form-urlencoded");
-
-            connection.setRequestProperty("Content-Length",
-                    Integer.toString(urlParameters.getBytes().length));
-            connection.setRequestProperty("Content-Language", "en-US");
-
-            connection.setUseCaches(false);
-            connection.setDoOutput(true);
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
-        return new ZkongResponceDTO();
-    }
-
-    public static ZkongResponceDTO deleteItem (DeleteItemDTO deleteItemDTO) throws Exception {
-        //Create connection
-        try {
-            URL url = new URL(address);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-Type",
-                    "application/x-www-form-urlencoded");
-
-            connection.setRequestProperty("Content-Length",
-                    Integer.toString(urlParameters.getBytes().length));
-            connection.setRequestProperty("Content-Language", "en-US");
-
-            connection.setUseCaches(false);
-            connection.setDoOutput(true);
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
-        return new ZkongResponceDTO();
-    }
-
-    public static ZkongResponceDTO bindItemWithTag (TagsItemsBindDTO tagsItemsBindDTO) throws Exception {
-        //Create connection
-        try {
-            URL url = new URL(address);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-Type",
-                    "application/x-www-form-urlencoded");
-
-            connection.setRequestProperty("Content-Length",
-                    Integer.toString(urlParameters.getBytes().length));
-            connection.setRequestProperty("Content-Language", "en-US");
-
-            connection.setUseCaches(false);
-            connection.setDoOutput(true);
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
-        return new ZkongResponceDTO();
-    }
-
-    private static String doConnect () {
-            try {
-                //Send request
-
-                DataOutputStream wr = new DataOutputStream (
-                        connection.getOutputStream());
-                wr.writeBytes(urlParameters);
-                wr.close();
-
-                //Get Response
-                InputStream is = connection.getInputStream();
-                BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-                StringBuilder response = new StringBuilder(); // or StringBuffer if Java version 5+
-                String line;
-                while ((line = rd.readLine()) != null) {
-                    response.append(line);
-                    response.append('\r');
-                }
-                rd.close();
-                return response.toString();
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            } finally {
-                if (connection != null) {
-                    connection.disconnect();
-                }
+            if (map.get("success").equals(true)) {
+                return map.get("data").toString();
+            } else {
+                throw new Exception(map.get("message").toString());
             }
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            throw ex;
+        }
     }
+
+    public static ZkongResponseDTO logIn(AuthDTO authDTO) throws Exception {
+        //Create connection
+        try {
+
+            String publicKey = getPublicKey();
+
+            HttpClient client = HttpClient.newHttpClient();
+
+            Map<String, Object> formData = new HashMap<>();
+            formData.put("account", authDTO.getAccount());
+            formData.put("loginType", authDTO.getLoginType());
+            formData.put("password", EncryptionPassword.encryptByPublicKey(publicKey, authDTO.getPassword()));
+
+            ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+            String json = ow.writeValueAsString(formData);
+
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(address + "/user/login"))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            ObjectMapper mapper = new ObjectMapper();
+            ZkongResponseDTO map = mapper.readValue((String) response.body(), ZkongResponseDTO.class);
+
+            return map;
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+        return new ZkongResponseDTO();
+    }
+
+
+    public static ZkongResponseDTO importItem (ImportItemDTO importItemDTO, String token) throws Exception {
+        //Create connection
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+
+            ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+            String json = ow.writeValueAsString(importItemDTO);
+
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(address + "/item/batchImportItem"))
+                    .headers("Content-Type", "application/json", "Authorization", token)
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            ObjectMapper mapper = new ObjectMapper();
+            ZkongResponseDTO map = mapper.readValue((String) response.body(), ZkongResponseDTO.class);
+
+            return map;
+
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            throw ex;
+        }
+    }
+
+    public static ZkongResponseDTO deleteItem (DeleteItemDTO deleteItemDTO, String token) throws Exception {
+        //Create connection
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+
+            ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+            String json = ow.writeValueAsString(deleteItemDTO);
+
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(address + "/item/batchDeleteItem"))
+                    .headers("Content-Type", "application/json", "Authorization", token)
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            ObjectMapper mapper = new ObjectMapper();
+            ZkongResponseDTO map = mapper.readValue((String) response.body(), ZkongResponseDTO.class);
+
+            return map;
+
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            throw ex;
+        }
+    }
+
+    public static ZkongResponseDTO bindItemWithTag (TagsItemsBindDTO tagsItemsBindDTO, String token) throws Exception {
+        //Create connection
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+
+            ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+            String json = ow.writeValueAsString(tagsItemsBindDTO);
+
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(address + "/bind/batchBind"))
+                    .headers("Content-Type", "application/json", "Authorization", token)
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            ObjectMapper mapper = new ObjectMapper();
+            ZkongResponseDTO map = mapper.readValue((String) response.body(), ZkongResponseDTO.class);
+
+            return map;
+
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            throw ex;
+        }
+    }
+
 }

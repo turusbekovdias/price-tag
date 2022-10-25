@@ -16,12 +16,14 @@ public class PriceTagMapper {
         tagDTO.setBaseStation(priceTag.getBaseStation());
         tagDTO.setStatus(priceTag.getStatus());
         tagDTO.setRegistrationDate(priceTag.getRegistrationDate());
+        tagDTO.setProductItem(priceTag.getItem());
         return tagDTO;
     }
 
     public PriceTag toEntity (PriceTagDTO priceTagDTO) {
         PriceTag tagEnt = new PriceTag();
         tagEnt.setId(priceTagDTO.getId());
+        tagEnt.setItem(priceTagDTO.getProductItem());
         tagEnt.setTagCode(priceTagDTO.getTagCode());
         tagEnt.setBaseStation(priceTagDTO.getBaseStation());
         tagEnt.setStatus(priceTagDTO.getStatus());
@@ -32,13 +34,7 @@ public class PriceTagMapper {
     public List<PriceTag> toEntity(List<PriceTagDTO> dtoList) {
         return dtoList.stream()
                 .map(env -> {
-                    PriceTag tagEnt = new PriceTag();
-                    tagEnt.setId(env.getId());
-                    tagEnt.setTagCode(env.getTagCode());
-                    tagEnt.setBaseStation(env.getBaseStation());
-                    tagEnt.setStatus(env.getStatus());
-                    tagEnt.setRegistrationDate(env.getRegistrationDate());
-                    return tagEnt;
+                    return toEntity(env);
                 })
                 .collect(Collectors.toList());
     }
@@ -46,13 +42,7 @@ public class PriceTagMapper {
     public List <PriceTagDTO> toDTO(List<PriceTag> entityList) {
         return entityList.stream()
                 .map(env -> {
-                    PriceTagDTO tagDTO = new PriceTagDTO();
-                    tagDTO.setId(env.getId());
-                    tagDTO.setTagCode(env.getTagCode());
-                    tagDTO.setBaseStation(env.getBaseStation());
-                    tagDTO.setStatus(env.getStatus());
-                    tagDTO.setRegistrationDate(env.getRegistrationDate());
-                    return tagDTO;
+                    return toDTO(env);
                 })
                 .collect(Collectors.toList());
     }

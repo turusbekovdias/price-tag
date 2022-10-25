@@ -30,6 +30,10 @@ public class PriceTag implements Serializable {
     private LocalDateTime registrationDate;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "item")
+    private Item item;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "base_station")
     private BaseStation baseStation;
 

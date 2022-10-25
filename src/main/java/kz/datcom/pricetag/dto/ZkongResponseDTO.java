@@ -1,12 +1,15 @@
 package kz.datcom.pricetag.dto;
 
 import io.swagger.v3.core.util.Json;
+import lombok.Data;
 
-public class ZkongResponceDTO {
+@Data
+public class ZkongResponseDTO {
 
     private Boolean success;
     private Integer code;
     private String message;
-    private Json data;
+    private Object data;
+    private Object translate;
 
 }

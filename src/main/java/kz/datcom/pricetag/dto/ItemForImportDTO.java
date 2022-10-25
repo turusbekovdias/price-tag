@@ -1,19 +1,15 @@
 package kz.datcom.pricetag.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 @Data
 @Builder
-@Getter
-@Setter
-public class ItemDTO {
-    private Long id;
-    private String status;
+public class ItemForImportDTO {
 
     private String barCode;
     private String attrCategory;
@@ -28,12 +24,25 @@ public class ItemDTO {
     private String qrCode;
     private String nfcUrl;
     private String spec;
-    private BigDecimal originalPrice;
-    private BigDecimal price;
-    private BigDecimal memberPrice;
-    private BigDecimal stock1;
-    private BigDecimal stock2;
-    private BigDecimal stock3;
+
+    @JsonFormat(shape=JsonFormat.Shape.STRING)
+    private BigInteger originalPrice;
+
+    @JsonFormat(shape=JsonFormat.Shape.STRING)
+    private BigInteger price;
+
+    @JsonFormat(shape=JsonFormat.Shape.STRING)
+    private BigInteger memberPrice;
+
+    @JsonFormat(shape=JsonFormat.Shape.STRING)
+    private BigInteger stock1;
+
+    @JsonFormat(shape=JsonFormat.Shape.STRING)
+    private BigInteger stock2;
+
+    @JsonFormat(shape=JsonFormat.Shape.STRING)
+    private BigInteger stock3;
+
     private String promotionText;
     private String custFeature1;
     private String custFeature2;
@@ -50,4 +59,5 @@ public class ItemDTO {
     private String custFeature13;
     private String custFeature14;
     private String custFeature15;
+
 }
