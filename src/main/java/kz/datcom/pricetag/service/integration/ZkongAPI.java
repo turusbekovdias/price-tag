@@ -122,7 +122,7 @@ public class ZkongAPI {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(address + "/item/batchDeleteItem"))
                     .headers("Content-Type", "application/json", "Authorization", token)
-                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .method("DELETE", HttpRequest.BodyPublishers.ofString(json))
                     .build();
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());

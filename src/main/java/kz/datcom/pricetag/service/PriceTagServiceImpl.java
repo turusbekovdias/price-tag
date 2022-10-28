@@ -6,6 +6,7 @@ import kz.datcom.pricetag.model.BaseStation;
 import kz.datcom.pricetag.model.PriceTag;
 import kz.datcom.pricetag.repository.BaseStationRepository;
 import kz.datcom.pricetag.repository.PriceTagRepository;
+import kz.datcom.pricetag.service.integration.ZkongService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

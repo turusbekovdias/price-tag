@@ -2,6 +2,7 @@ package kz.datcom.pricetag.service;
 
 import kz.datcom.pricetag.dto.DeleteItemDTO;
 import kz.datcom.pricetag.dto.ItemDTO;
+import kz.datcom.pricetag.dto.ZkongResponseDTO;
 import kz.datcom.pricetag.mapper.ProductItemMapper;
 import kz.datcom.pricetag.model.Item;
 import kz.datcom.pricetag.repository.ProductRepository;
@@ -21,7 +22,8 @@ public class ProductServiceImpl implements ProductService {
 
     private ProductItemMapper productItemMapper = new ProductItemMapper();
 
-    private static ZkongService zkongService;
+    @Autowired
+    ZkongService zkongService;
 
     @Override
     public ItemDTO addProduct(ItemDTO itemDTO) throws Exception {
@@ -41,9 +43,13 @@ public class ProductServiceImpl implements ProductService {
             if (item.get().getStatus().equals("IMPORT")) {
                 List<String> list = new ArrayList<>();
                 list.add(item.get().getBarCode());
-                zkongService.deleteItem(list);
+                ZkongResponseDTO responseDTO = zkongService.deleteItem(list);
+                if (responseDTO.getSuccess().equals(true)) {
+                    productRepository.deleteById(productId);
+                }
+            } else {
+            productRepository.deleteById(productId);
             }
-//            productRepository.deleteById(productId);
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
